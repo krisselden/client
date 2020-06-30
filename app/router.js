@@ -1,5 +1,3 @@
-import { get } from '@ember/object';
-import { scheduleOnce } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import EmberRouter from '@ember/routing/router';
 import config from './config/environment';
@@ -12,38 +10,42 @@ const Router = EmberRouter.extend(RouterScroll, {
 
   init() {
     this._super(...arguments);
-    this.on('routeDidChange', () => this.routeDidChange());
-    this.on('routeWillChange', () => this.routeWillChange());
   },
 
-  routeDidChange() {
-    this._trackPage();
-    performance.mark('routeDidChange');
+  willTransition() {
+    performance.mark('willTransition');
+    this._super(...arguments);
   },
 
-  routeWillChange() {
-    performance.mark('routeWillChange');
+  didTransition() {
+    this._super(...arguments);
+    performance.mark('didTransition');
   },
+
+
+  // // routeDidChange() {
+  // //   this._trackPage();
+  // },
 
   previousPage: null,
 
-  _trackPage() {
-    scheduleOnce('afterRender', this, () => {
-      let page = document.location.pathname;
-      let title = this.getWithDefault('currentRouteName', 'unknown');
-      let previousPage = this.get('previousPage');
-      let hasQuery = /query=/.test(document.location.search);
+  // _trackPage() {
+  //   scheduleOnce('afterRender', this, () => {
+  //     let page = document.location.pathname;
+  //     let title = this.getWithDefault('currentRouteName', 'unknown');
+  //     let previousPage = this.get('previousPage');
+  //     let hasQuery = /query=/.test(document.location.search);
 
-      if (hasQuery) {
-        page = `${page}/?query=`;
-      }
+  //     if (hasQuery) {
+  //       page = `${page}/?query=`;
+  //     }
 
-      if (page !== previousPage) {
-        this.set('previousPage', page);
-        get(this, 'metrics').trackPage({ page, title });
-      }
-    });
-  }
+  //     if (page !== previousPage) {
+  //       this.set('previousPage', page);
+  //       get(this, 'metrics').trackPage({ page, title });
+  //     }
+  //   });
+  // }
 });
 
 Router.map(function() {

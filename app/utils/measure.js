@@ -1,9 +1,9 @@
 import { schedule } from '@ember/runloop';
 
-function shouldMeasure() {
-  let { search } = location;
-
-  return search === '?perf.tracing' || search === '?perf.profile';
+let redirect = false;
+if (typeof location !== 'undefined') {
+  const url = new URL(location.href);
+  redirect = url.searchParams.has('perf.tracing');
 }
 
 /*
@@ -23,31 +23,21 @@ export default function measure() {
 export function renderEnd() {
   requestAnimationFrame(() => {
     performance.mark('beforePaint');
-
     requestAnimationFrame(() => {
-      performance.mark('afterPaint');
-
-      if (!shouldMeasure()) {
-        return;
-      }
-
-      performance.measure('assets', 'domLoading', 'beforeVendor');
-
-      performance.measure('evalVendor', 'beforeVendor', 'beforeApp');
-      performance.measure('evalApp', 'beforeApp', 'afterApp');
-
-      performance.measure('boot', 'beforeVendor', 'willTransition');
-      performance.measure('routing', 'willTransition', 'didTransition');
-      performance.measure('render', 'didTransition', 'beforePaint');
-      performance.measure('paint', 'beforePaint', 'afterPaint');
-
-      performance.measure('data', 'willTransition', 'dataLoaded');
-      performance.measure('afterData', 'dataLoaded', 'beforePaint');
-
-      if (location.search === '?perf.tracing') {
+      if (redirect) {
         document.location.href = 'about:blank';
-      } else if (location.search === '?perf.profile') {
-        console.profileEnd('initialRender'); // eslint-disable-line no-console
+      } else {
+        performance.mark('afterPaint');
+        // performance.measure('assets', 'navigationStart', 'beforeVendor');
+        performance.measure('boot', 'navigationStart', 'willTransition');
+        performance.measure('transition', 'willTransition', 'didTransition');
+        performance.measure('render', 'didTransition', 'beforePaint');
+        performance.measure('paint', 'beforePaint', 'afterPaint');
+
+        // performance.measure('evalVendor', 'beforeVendor', 'beforeApp');
+        // performance.measure('evalApp', 'beforeApp', 'afterApp');
+        // performance.measure('data', 'willTransition', 'dataLoaded');
+        // performance.measure('afterData', 'dataLoaded', 'beforePaint');
       }
     });
   });

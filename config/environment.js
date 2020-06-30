@@ -34,21 +34,21 @@ module.exports = function(environment) {
     discoverEmberDataModels: false
   };
 
-  if (parseFlag('COLLECT_METRICS', true)) {
-    ENV.metricsAdapters = [
-      {
-        name: 'GoogleAnalytics',
-        environments: ['production'],
-        config: {
-          id: 'UA-59673320-1'
-        }
-      },
-      {
-        name: 'LocalAdapter',
-        environments: ['development']
-      }
-    ];
-  }
+  // if (parseFlag('COLLECT_METRICS', true)) {
+  //   ENV.metricsAdapters = [
+  //     {
+  //       name: 'GoogleAnalytics',
+  //       environments: ['production'],
+  //       config: {
+  //         id: 'UA-59673320-1'
+  //       }
+  //     },
+  //     {
+  //       name: 'LocalAdapter',
+  //       environments: ['development']
+  //     }
+  //   ];
+  // }
 
   if (environment === 'development') {
     // ENV.APP.LOG_RESOLVER = true;

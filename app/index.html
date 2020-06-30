@@ -9,8 +9,8 @@
 
     {{content-for "head"}}
 
-    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/vendor.css">
-    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/ember-observer.css">
+    <link rel="stylesheet" href="{{rootURL}}assets/vendor.css">
+    <link rel="stylesheet" href="{{rootURL}}assets/ember-observer.css">
     <link rel="search" type="application/opensearchdescription+xml" title="Ember Observer" href="/opensearch.xml" />
 
     {{content-for "snippets/perf-utils"}}
@@ -22,16 +22,8 @@
   <body>
     {{content-for "body"}}
 
-    <script>performance.mark("beforeVendor");</script>
     <script src="{{rootURL}}assets/vendor.js"></script>
-    <script>performance.mark("beforeApp");</script>
-    <script>
-      if (window.location.search === "?perf.profile") {
-        console.profile("initialRender");
-      }
-    </script>
     <script src="{{rootURL}}assets/ember-observer.js"></script>
-    <script>performance.mark("afterApp");</script>
 
     {{content-for "body-footer"}}
   </body>
